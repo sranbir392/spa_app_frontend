@@ -70,6 +70,8 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+           <Route path='client/:id' element={<ProtectedRoute><ClientDetails/></ProtectedRoute>}/>
+        
           <Route
             path="clients"
             element={
@@ -78,8 +80,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path='client/:id' element={<ProtectedRoute><ClientDetails/></ProtectedRoute>}/>
-        
+         
           <Route
             path="massages"
             element={
