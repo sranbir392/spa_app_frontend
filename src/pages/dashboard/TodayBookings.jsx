@@ -29,7 +29,7 @@ const TodayBookings = () => {
       const token = localStorage.getItem('token');
       
       const response = await axios.get(
-        `http://localhost:5000/api/bookings/date/${date}`,
+        `${import.meta.env.VITE_END_POINT}/bookings/date/${date}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -52,7 +52,7 @@ const TodayBookings = () => {
       const token = localStorage.getItem('token');
       
       await axios.delete(
-        `http://localhost:5000/api/bookings/${bookingId}`,
+        `${import.meta.env.VITE_END_POINT}/bookings/${bookingId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -75,7 +75,7 @@ const TodayBookings = () => {
       const token = localStorage.getItem('token');
       
       await axios.put(
-        `http://localhost:5000/api/bookings/${bookingId}/otherPayment`,
+        `${import.meta.env.VITE_END_POINT}/bookings/${bookingId}/otherPayment`,
         { otherPayment: parseFloat(newPaymentAmount) },
         {
           headers: {

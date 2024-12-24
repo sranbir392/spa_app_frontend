@@ -87,7 +87,7 @@ const EmployeeTable = ({ employees, onStatusChange }) => {
         throw new Error('Authentication token not found');
       }
 
-      const response = await fetch(`http://localhost:5000/api/admin/update-employee/${employeeId}`, {
+      const response = await fetch(`${import.meta.env.VITE_END_POINT}/admin/update-employee/${employeeId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ const EmployeeTable = ({ employees, onStatusChange }) => {
           throw new Error('Authentication token not found');
         }
 
-        const response = await fetch(`http://localhost:5000/api/admin/employees/${employeeId}`, {
+        const response = await fetch(`${import.meta.env.VITE_END_POINT}/admin/employees/${employeeId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`

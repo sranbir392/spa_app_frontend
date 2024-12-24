@@ -13,7 +13,7 @@ const Analytics = () => {
       const formattedDate = format(date, 'dd');
       const formattedMonth = format(date, 'yyyy-MM');
       const response = await fetch(
-        `http://localhost:5000/api/bookings/stats?date=${formattedDate}&month=${formattedMonth}`,
+        `${import.meta.env.VITE_END_POINT}/bookings/stats?date=${formattedDate}&month=${formattedMonth}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -33,7 +33,7 @@ const Analytics = () => {
       const token = localStorage.getItem('token');
       const formattedMonth = format(date, 'yyyy-MM');
       const response = await fetch(
-        `http://localhost:5000/api/bookings/stats?month=${formattedMonth}`,
+        `${import.meta.env.VITE_END_POINT}/bookings/stats?month=${formattedMonth}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,

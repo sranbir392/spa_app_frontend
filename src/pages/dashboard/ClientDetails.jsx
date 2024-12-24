@@ -22,7 +22,7 @@ const [totalVisits,setTotalVistis]=useState(0)
             Authorization: `Bearer ${token}`
           }
         };
-        const response = await axios.get(`http://localhost:5000/api/client/${id}`, config);
+        const response = await axios.get(`${import.meta.env.VITE_END_POINT}/client/${id}`, config);
         setClientData(response.data.client);
         setTotalVistis(response.data.totalVisits)
         setError(null);

@@ -14,7 +14,7 @@ const Employees = () => {
         throw new Error('Authentication token not found');
       }
 
-      const response = await fetch(`http://localhost:5000/api/admin/employees`, {
+      const response = await fetch(`${import.meta.env.VITE_END_POINT}/admin/employees`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

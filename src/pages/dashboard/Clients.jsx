@@ -15,7 +15,7 @@ const Clients = () => {
         throw new Error('Authentication token not found');
       }
       
-      const url = new URL(`http://localhost:5000/api/client`);
+      const url = new URL(`${import.meta.env.VITE_END_POINT}/client`);
       if (search) {
         url.searchParams.append('search', search);
       }

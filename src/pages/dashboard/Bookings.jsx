@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { format, addHours, addMinutes, parse } from 'date-fns';
 
 const Bookings = () => {
@@ -46,7 +46,7 @@ const Bookings = () => {
   const fetchEmployees = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/admin/employees`, {
+      const response = await fetch(`${import.meta.env.VITE_END_POINT}/admin/employees`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -65,7 +65,7 @@ const Bookings = () => {
   const fetchMassages = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/massages', {
+      const response = await fetch(`${import.meta.env.VITE_END_POINT}/massages`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -84,7 +84,7 @@ const Bookings = () => {
   const fetchClientBookings = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/bookings/client/${formData.clientContact}`, {
+      const response = await fetch(`${import.meta.env.VITE_END_POINT}/bookings/client/${formData.clientContact}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -191,7 +191,7 @@ const Bookings = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/bookings', {
+      const response = await fetch(`${import.meta.env.VITE_END_POINT}/bookings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

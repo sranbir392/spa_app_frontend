@@ -46,7 +46,7 @@ const Massages = () => {
   // Fetch all massages
   const fetchMassages = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/massages`, {
+      const response = await fetch(`${import.meta.env.VITE_END_POINT}/massages`, {
         headers: getAuthHeaders()
       });
       
@@ -72,7 +72,7 @@ const Massages = () => {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:5000/api/massages/search/${searchTerm}`, {
+      const response = await fetch(`${import.meta.env.VITE_END_POINT}/massages/search/${searchTerm}`, {
         headers: getAuthHeaders()
       });
 
@@ -93,8 +93,8 @@ const Massages = () => {
     if (!isAdmin) return;
 
     const url = isEditMode 
-      ? `http://localhost:5000/api/massages/${currentMassage._id}`
-      : `http://localhost:5000/api/massages/create`;
+      ? `${import.meta.env.VITE_END_POINT}/massages/${currentMassage._id}`
+      : `${import.meta.env.VITE_END_POINT}/massages/create`;
     
     const method = isEditMode ? 'PUT' : 'POST';
 
@@ -123,7 +123,7 @@ const Massages = () => {
     
     if (window.confirm('Are you sure you want to delete this massage?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/massages/${id}`, {
+        const response = await fetch(`${import.meta.env.VITE_END_POINT}/massages/${id}`, {
           method: 'DELETE',
           headers: getAuthHeaders()
         });

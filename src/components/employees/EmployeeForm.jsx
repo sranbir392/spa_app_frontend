@@ -22,7 +22,7 @@ const EmployeeForm = ({ onSubmit }) => {
         throw new Error('Authentication token not found');
       }
 
-      const response = await fetch(`http://localhost:5000/api/admin/add-employee`, {
+      const response = await fetch(`${import.meta.env.VITE_END_POINT}/admin/add-employee`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
