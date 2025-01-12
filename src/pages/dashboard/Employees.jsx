@@ -81,6 +81,7 @@ const Employees = () => {
               <EmployeeTable 
                 employees={employees} 
                 onStatusChange={handleStatusChange}
+                onRefreshNeeded={fetchEmployees}
               />
             </div>
           </div>

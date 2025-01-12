@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { format } from 'date-fns';
 
 const TodayBookings = () => {
   const [bookings, setBookings] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [editingPayment, setEditingPayment] = useState(null);
+  const [editingPrice, setEditingPrice] = useState(null);
   const [newPaymentAmount, setNewPaymentAmount] = useState('');
+  const [newPriceAmount, setNewPriceAmount] = useState('');
   const userRole = localStorage.getItem('role');
 
   const formatTime = (time) => {
@@ -95,9 +99,37 @@ const TodayBookings = () => {
     }
   };
 
+  const handlePriceUpdate = async (bookingId) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      await axios.put(
+        `${import.meta.env.VITE_END_POINT}/bookings/${bookingId}`,
+        { massagePrice: parseFloat(newPriceAmount) },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      await fetchBookings(selectedDate);
+      setEditingPrice(null);
+      setNewPriceAmount('');
+    } catch (err) {
+      setError('Failed to update price. Please try again.');
+      console.error('Error updating price:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (userRole === 'employee') {
-      setSelectedDate(format(new Date(), 'yyyy-MM-dd'));
+      const today = new Date();
+      const localDate = new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+      setSelectedDate(localDate);
     }
     fetchBookings(selectedDate);
   }, [selectedDate, userRole]);
@@ -158,7 +190,46 @@ const TodayBookings = () => {
                   <td className="px-6 py-4 whitespace-nowrap">{booking.clientContact}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{booking.massage.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{booking.sessionTime}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">₹{booking.massagePrice}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {editingPrice === booking._id ? (
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="number"
+                          value={newPriceAmount}
+                          onChange={(e) => setNewPriceAmount(e.target.value)}
+                          className="w-20 p-1 border rounded"
+                        />
+                        <button
+                          onClick={() => handlePriceUpdate(booking._id)}
+                          className="bg-green-500 text-white px-2 py-1 rounded"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingPrice(null);
+                            setNewPriceAmount('');
+                          }}
+                          className="bg-gray-500 text-white px-2 py-1 rounded"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        ₹{booking.massagePrice}
+                        <button
+                          onClick={() => {
+                            setEditingPrice(booking._id);
+                            setNewPriceAmount(booking.massagePrice?.toString() || '');
+                          }}
+                          className="bg-blue-500 text-white px-2 py-1 rounded ml-2"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    )}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {editingPayment === booking._id ? (
                       <div className="flex items-center space-x-2">

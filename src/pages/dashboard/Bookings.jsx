@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { format, addHours, addMinutes, parse } from 'date-fns';
 
 const Bookings = () => {
   // State management
@@ -10,7 +9,7 @@ const Bookings = () => {
     massageDate: '',
     massageTime: '',
     massageEndTime: '',
-    sessionTime: '45MIN+15MIN',
+    sessionTime: '30MIN+15MIN',
     massageType: '',
     massagePrice: 0,
     staffDetails: '',
@@ -26,6 +25,7 @@ const Bookings = () => {
 
   // Session time options
   const sessionTimeOptions = [
+    "30MIN+15MIN",
     "45MIN+15MIN",
     "60MIN+15MIN",
     "90MIN+15MIN",
@@ -53,7 +53,10 @@ const Bookings = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        setEmployees(data?.employees || []);
+        const nonAdminEmployees = data?.employees?.filter(employee => 
+          employee.role !== 'admin' && employee.role !== 'ADMIN'
+        ) || [];
+        setEmployees(nonAdminEmployees);
       } else {
         console.error('Error fetching employees:', data.message);
       }
@@ -108,10 +111,15 @@ const Bookings = () => {
 
   const formatTime12Hour = (timeString) => {
     try {
-      // Parse the input time string (which might be in 24-hour format)
-      const date = parse(timeString, 'HH:mm', new Date());
-      // Return the time in 12-hour format
-      return format(date, 'hh:mm a');
+      const [hours, minutes] = timeString.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      return date.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit', 
+        hour12: true 
+      });
     } catch (error) {
       console.error('Error formatting time:', error);
       return timeString;
@@ -120,34 +128,37 @@ const Bookings = () => {
 
   const calculateEndTime = (time, sessionTime) => {
     try {
-      // Parse the time in 24-hour format first
-      const startTime = parse(time, 'HH:mm', new Date());
-      
+      const [hours, minutes] = time.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(minutes);
+
       let endTime;
       switch (sessionTime) {
+        case '30MIN+15MIN':
+          date.setMinutes(date.getMinutes() + 45); // 30 + 15 minutes
+          break;
         case '45MIN+15MIN':
-          endTime = addHours(startTime, 1);
+          date.setMinutes(date.getMinutes() + 60); // 45 + 15 minutes
           break;
         case '60MIN+15MIN':
-          endTime = addMinutes(addHours(startTime, 1), 15);
+          date.setMinutes(date.getMinutes() + 75); // 60 + 15 minutes
           break;
         case '90MIN+15MIN':
-          endTime = addMinutes(addHours(startTime, 1), 45);
+          date.setMinutes(date.getMinutes() + 105); // 90 + 15 minutes
           break;
         case '120MIN+15MIN':
-          endTime = addMinutes(addHours(startTime, 2), 15);
+          date.setMinutes(date.getMinutes() + 135); // 120 + 15 minutes
           break;
-        default:
-          endTime = startTime;
       }
 
-      // Return the end time in 12-hour format
-      return format(endTime, 'HH:mm');
+      return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
     } catch (error) {
       console.error('Error calculating end time:', error);
       return '';
     }
   };
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -175,6 +186,11 @@ const Bookings = () => {
             newData.massagePrice = selectedMassage.discountedPrice[timeIndex];
           }
         }
+      }
+
+      if (name === 'massagePrice') {
+        console.log(value)
+        newData.massagePrice = parseFloat(value) || 0;
       }
 
       if (name === 'massageTime' || name === 'sessionTime') {
@@ -211,7 +227,7 @@ const Bookings = () => {
           massageDate: '',
           massageTime: '',
           massageEndTime: '',
-          sessionTime: '45MIN+15MIN',
+          sessionTime: '30MIN+15MIN',
           massageType: '',
           massagePrice: 0,
           staffDetails: '',
@@ -235,7 +251,6 @@ const Bookings = () => {
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-2xl font-bold mb-6">Create New Booking</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Client Information */}
           <div>
             <label className="block mb-2">Client Contact</label>
             <input
@@ -260,9 +275,6 @@ const Bookings = () => {
             />
           </div>
 
-          
-
-          {/* Massage Selection */}
           <div>
             <label className="block mb-2">Massage</label>
             <select
@@ -299,7 +311,6 @@ const Bookings = () => {
             </select>
           </div>
 
-          {/* Date and Time */}
           <div>
             <label className="block mb-2">Date</label>
             <input
@@ -351,7 +362,6 @@ const Bookings = () => {
             />
           </div>
 
-          {/* Room Selection */}
           <div>
             <label className="block mb-2">Room Number</label>
             <select
@@ -369,7 +379,6 @@ const Bookings = () => {
             </select>
           </div>
 
-          {/* Payment Information */}
           <div>
             <label className="block mb-2">Price</label>
             <input
@@ -378,6 +387,8 @@ const Bookings = () => {
               value={formData.massagePrice}
               onChange={handleInputChange}
               className="w-full p-2 border rounded"
+              min="0"
+              step="0.01"
               required
             />
           </div>
@@ -420,7 +431,6 @@ const Bookings = () => {
         </form>
       </div>
 
-      {/* Client Booking History Table */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold mb-6">Client Booking History</h2>
         <div className="overflow-x-auto">

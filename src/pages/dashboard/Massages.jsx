@@ -10,9 +10,9 @@ const Massages = () => {
   const [currentMassage, setCurrentMassage] = useState({
     name: '',
     description: '',
-    time: ["45MIN+15MIN", "60MIN+15MIN", "90MIN+15MIN", "120MIN+15MIN"],
-    price: [0, 0, 0, 0],
-    discountedPrice: [0, 0, 0, 0]
+    time: ['30MIN+15MIN',"45MIN+15MIN", "60MIN+15MIN", "90MIN+15MIN", "120MIN+15MIN"],
+    price: [0,0, 0, 0, 0],
+    discountedPrice: [0,0, 0, 0, 0]
   });
 
   // Check admin role on component mount
@@ -150,9 +150,9 @@ const Massages = () => {
     setCurrentMassage({
       name: '',
       description: '',
-      time: ["45MIN+15MIN", "60MIN+15MIN", "90MIN+15MIN", "120MIN+15MIN"],
-      price: [0, 0, 0, 0],
-      discountedPrice: [0, 0, 0, 0]
+      time: ['30MIN+15MIN',"45MIN+15MIN", "60MIN+15MIN", "90MIN+15MIN", "120MIN+15MIN"],
+      price: [0,0, 0, 0, 0],
+      discountedPrice: [0,0, 0, 0, 0]
     });
     setIsEditMode(false);
   };
@@ -213,7 +213,7 @@ const Massages = () => {
                     description: e.target.value
                   })}
                   className="border rounded px-3 py-2 w-full h-24"
-                  required
+                 
                 />
               </div>
               <div className="space-y-2">

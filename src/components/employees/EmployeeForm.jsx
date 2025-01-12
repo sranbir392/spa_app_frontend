@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 const EmployeeForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -6,6 +7,8 @@ const EmployeeForm = ({ onSubmit }) => {
     username: '',
     password: ''
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -53,7 +56,7 @@ const EmployeeForm = ({ onSubmit }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Add New Employee</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
             Name
@@ -65,7 +68,8 @@ const EmployeeForm = ({ onSubmit }) => {
             value={formData.name}
             onChange={handleChange}
             required
-            className="mt-3 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            autoComplete="off"
+            className="mt-3 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -79,22 +83,37 @@ const EmployeeForm = ({ onSubmit }) => {
             value={formData.username}
             onChange={handleChange}
             required
-            className="mt-3 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            autoComplete="new-username"
+            className="mt-3 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-700">
             Password
           </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="mt-3 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
+          <div className="relative mt-3">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              autoComplete="new-password"
+              className="p-2 block w-full rounded-md border border-black-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 flex items-center pr-3"
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5 text-gray-400" />
+              ) : (
+                <Eye className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+          </div>
         </div>
         <button
           type="submit"

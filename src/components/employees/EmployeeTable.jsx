@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import ChangePasswordModal from './ChangePasswordModal';
+import { Key } from 'lucide-react';
 
 const ToggleSwitch = ({ checked, onChange }) => {
   return (
@@ -79,7 +81,10 @@ const PasswordField = ({ password }) => {
   );
 };
 
-const EmployeeTable = ({ employees, onStatusChange }) => {
+const EmployeeTable = ({ employees, onStatusChange,onRefreshNeeded }) => {
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+
   const handleStatusToggle = async (employeeId, currentStatus) => {
     try {
       const token = localStorage.getItem('token');
@@ -125,12 +130,22 @@ const EmployeeTable = ({ employees, onStatusChange }) => {
           throw new Error('Failed to delete employee');
         }
 
-        window.location.reload();
+        onRefreshNeeded();
       } catch (error) {
         console.error('Error deleting employee:', error);
         alert('Failed to delete employee. Please try again.');
       }
     }
+  };
+
+  const handleChangePassword = (userId) => {
+    setSelectedUserId(userId);
+    setShowPasswordModal(true);
+  };
+  const handlePasswordChangeSuccess = () => {
+    setShowPasswordModal(false);
+    setSelectedUserId(null);
+    onRefreshNeeded(); // Refresh the table after password change
   };
 
   return (
@@ -177,20 +192,28 @@ const EmployeeTable = ({ employees, onStatusChange }) => {
                 <div className="text-sm text-gray-500">{employee.role}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <ToggleSwitch
+                {employee.role!=="admin"&&<ToggleSwitch
                   checked={employee.status}
                   onChange={() => handleStatusToggle(employee._id, employee.status)}
-                />
+                />}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-500">
                   {new Date(employee.createdAt).toLocaleDateString()}
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-6 py-4 whitespace-nowrap space-x-2">
+                <button
+                  onClick={() => handleChangePassword(employee._id)}
+                  className="text-blue-600 hover:text-blue-900 transition-colors duration-200 mr-2"
+                  title="Change Password"
+                >
+                  <Key className="w-5 h-5" />
+                </button>
                 <button
                   onClick={() => handleDelete(employee._id)}
                   className="text-red-600 hover:text-red-900 transition-colors duration-200"
+                  title="Delete Employee"
                 >
                   <TrashIcon />
                 </button>
@@ -199,8 +222,19 @@ const EmployeeTable = ({ employees, onStatusChange }) => {
           ))}
         </tbody>
       </table>
+
+      <ChangePasswordModal
+        isOpen={showPasswordModal}
+        onClose={() => {
+          setShowPasswordModal(false);
+          setSelectedUserId(null);
+        }}
+        onSuccess={handlePasswordChangeSuccess}
+        userId={selectedUserId}
+      />
     </div>
   );
 };
+
 
 export default EmployeeTable;

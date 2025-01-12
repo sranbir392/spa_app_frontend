@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Map the randomized field names back to our actual form fields
+    const fieldName = name.includes('username') ? 'username' : 'password';
     setFormData(prevData => ({
       ...prevData,
-      [name]: value
+      [fieldName]: value
     }));
     setError('');
   };
@@ -41,8 +44,8 @@ const LoginPage = () => {
       }
 
       localStorage.setItem('token', data.token);
-      localStorage.setItem("name",data.user.name);
-      localStorage.setItem("role",data.user.role);
+      localStorage.setItem("name", data.user.name);
+      localStorage.setItem("role", data.user.role);
       navigate('/dashboard');
       
     } catch (err) {
@@ -59,7 +62,6 @@ const LoginPage = () => {
           <h2 className="text-3xl font-serif font-bold text-gray-900">
             Welcome to SMS
           </h2>
-          
         </div>
         
         {error && (
@@ -69,37 +71,79 @@ const LoginPage = () => {
           </div>
         )}
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form 
+          className="mt-8 space-y-6" 
+          onSubmit={handleSubmit} 
+          autoComplete="off"
+          spellCheck="false"
+        >
+          {/* Chrome ignores autocomplete="off" so we need to trick it */}
+          <input 
+            type="text" 
+            name="prevent_autofill" 
+            id="prevent_autofill" 
+            value="" 
+            style={{ display: 'none' }} 
+          />
+          <input 
+            type="password" 
+            name="password_fake" 
+            id="password_fake" 
+            value="" 
+            style={{ display: 'none' }} 
+          />
+          
           <div className="space-y-6">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-900 mb-2">
+              <label htmlFor="username_randomized" className="block text-sm font-medium text-gray-900 mb-2">
                 Username
               </label>
               <input
-                id="username"
-                name="username"
+                id="username_randomized"
+                name="username_randomized"
                 type="text"
                 required
                 value={formData.username}
                 onChange={handleChange}
+                autoComplete="new-password"
+                autoCorrect="off"
+                spellCheck="false"
+                data-form-type="other"
                 className="block w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm"
                 placeholder="Enter your username"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-900 mb-2">
+              <label htmlFor="password_randomized" className="block text-sm font-medium text-gray-900 mb-2">
                 Password
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="block w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm"
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <input
+                  id="password_randomized"
+                  name="password_randomized"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  autoComplete="new-password"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  data-form-type="other"
+                  className="block w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm pr-12"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
