@@ -8,7 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "../../components/ui/dialog";
+} from "../ui/Dialog";
 
 const ChangePasswordModal = ({ isOpen, onClose, onSuccess, userId }) => {
   const [formData, setFormData] = useState({
