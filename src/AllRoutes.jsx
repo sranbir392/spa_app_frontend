@@ -11,6 +11,8 @@ import Login from './pages/auth/LoginPage';
 import TodayBookings from './pages/dashboard/TodayBookings';
 import Clients from './pages/dashboard/Clients';
 import ClientDetails from './pages/dashboard/ClientDetails';
+import Expenses from './pages/dashboard/Exepenses';
+import MonthlyReport from './pages/dashboard/MonthlyReport';
 
 const App = () => {
   return (
@@ -51,7 +53,22 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="today/expenses"
+            element={
+              <ProtectedRoute>
+                <Expenses/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="monthly/report"
+            element={
+              <ProtectedRoute>
+                <MonthlyReport/>
+              </ProtectedRoute>
+            }
+          />
           
           {/* Common routes for both admin and employee */}
           <Route
@@ -62,6 +79,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          
           <Route
             path="today/bookings"
             element={

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 const TodayBookings = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const date = searchParams.get('date')
   const [bookings, setBookings] = useState([]);
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
-    return new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+    return date || new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,6 +21,7 @@ const TodayBookings = () => {
   const formatTime = (time) => {
     if (!time) return '';
     if (time.includes('AM') || time.includes('PM')) return time;
+  
     
     const [hours, minutes] = time.split(':');
     const hour = parseInt(hours);
@@ -126,12 +130,13 @@ const TodayBookings = () => {
   };
 
   useEffect(() => {
-    if (userRole === 'employee') {
-      const today = new Date();
-      const localDate = new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-      setSelectedDate(localDate);
-    }
+    // if (userRole === 'employee') {
+    //   const today = new Date();
+    //   const localDate = new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+    //   setSelectedDate(localDate);
+    // }
     fetchBookings(selectedDate);
+    setSearchParams({ date: selectedDate });
   }, [selectedDate, userRole]);
 
   return (

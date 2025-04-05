@@ -81,7 +81,7 @@ const PasswordField = ({ password }) => {
   );
 };
 
-const EmployeeTable = ({ employees, onStatusChange,onRefreshNeeded }) => {
+const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded }) => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
@@ -142,6 +142,7 @@ const EmployeeTable = ({ employees, onStatusChange,onRefreshNeeded }) => {
     setSelectedUserId(userId);
     setShowPasswordModal(true);
   };
+  
   const handlePasswordChangeSuccess = () => {
     setShowPasswordModal(false);
     setSelectedUserId(null);
@@ -192,10 +193,12 @@ const EmployeeTable = ({ employees, onStatusChange,onRefreshNeeded }) => {
                 <div className="text-sm text-gray-500">{employee.role}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                {employee.role!=="admin"&&<ToggleSwitch
-                  checked={employee.status}
-                  onChange={() => handleStatusToggle(employee._id, employee.status)}
-                />}
+                {employee.role !== "admin" && (
+                  <ToggleSwitch
+                    checked={employee.status}
+                    onChange={() => handleStatusToggle(employee._id, employee.status)}
+                  />
+                )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-500">
@@ -235,6 +238,5 @@ const EmployeeTable = ({ employees, onStatusChange,onRefreshNeeded }) => {
     </div>
   );
 };
-
 
 export default EmployeeTable;

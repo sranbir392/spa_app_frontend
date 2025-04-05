@@ -35,10 +35,22 @@ const Sidebar = () => {
       access: ['admin', 'employee']
     },
     {
+      title: 'Today Expenses',
+      path: '/dashboard/today/expenses',
+      icon: <CalendarDays className="w-5 h-5" />,
+      access: ['admin', 'employee']
+    },
+    {
       title: 'Today Bookings',
       path: '/dashboard/today/bookings',
       icon: <CalendarDays className="w-5 h-5" />,
       access: ['admin', 'employee']
+    },
+    {
+      title: 'Booking History',
+      path: '/dashboard/monthly/report',
+      icon: <CalendarDays className="w-5 h-5" />,
+      access: ['admin']
     },
     {
       title: 'Massages',
