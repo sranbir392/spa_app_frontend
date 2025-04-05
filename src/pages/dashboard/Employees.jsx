@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import EmployeeForm from '../../components/employees/EmployeeForm';
 import EmployeeTable from '../../components/employees/EmployeeTable';
-import ExpenseModal from '../../components/expenses/ExpenseModal';
-import { Plus, DollarSign } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [showExpenseModal, setShowExpenseModal] = useState(false);
 
   const fetchEmployees = async () => {
     try {
@@ -48,10 +46,7 @@ const Employees = () => {
     setShowAddForm(false); // Hide the form after successful submission
   };
 
-  const handleExpenseAdded = () => {
-    // You might want to show a success notification here
-    setShowExpenseModal(false);
-  };
+
 
   const handleStatusChange = (employeeId, newStatus) => {
     setEmployees(employees.map(emp => 
@@ -88,13 +83,7 @@ const Employees = () => {
             <Plus className="h-5 w-5 mr-2" />
             Add New Employee
           </button>
-          <button
-            onClick={() => setShowExpenseModal(true)}
-            className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow-sm transition-colors"
-          >
-            <DollarSign className="h-5 w-5 mr-2" />
-            Create Expense
-          </button>
+          
         </div>
       </div>
       
@@ -126,12 +115,7 @@ const Employees = () => {
         </div>
       </div>
 
-      {/* Expense Modal */}
-      <ExpenseModal
-        isOpen={showExpenseModal}
-        onClose={() => setShowExpenseModal(false)}
-        onSuccess={handleExpenseAdded}
-      />
+ 
     </div>
   );
 };

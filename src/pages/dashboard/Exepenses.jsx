@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ExpenseModal from '../../components/expenses/ExpenseModal';
+
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
@@ -13,6 +15,7 @@ const Expenses = () => {
   const [editingAmount, setEditingAmount] = useState(null);
   const [newTitle, setNewTitle] = useState('');
   const [newAmount, setNewAmount] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const userRole = localStorage.getItem('role');
 
   const fetchExpenses = async (date) => {
@@ -114,6 +117,11 @@ const Expenses = () => {
     }
   };
 
+  const handleModalSuccess = () => {
+    // Refresh expenses after successful addition
+    fetchExpenses(selectedDate);
+  };
+
   useEffect(() => {
     if (userRole === 'employee') {
       const today = new Date();
@@ -125,20 +133,30 @@ const Expenses = () => {
 
   return (
     <div className="container mx-auto">
-      {userRole !== 'employee' && (
-        <div className="mb-6">
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
-            Select Date
-          </label>
-          <input
-            type="date"
-            id="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="p-2 border rounded-md w-48"
-          />
-        </div>
-      )}
+      <div className="flex justify-between items-center mb-6">
+        {userRole !== 'employee' && (
+          <div>
+            <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
+              Select Date
+            </label>
+            <input
+              type="date"
+              id="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="p-2 border rounded-md w-48"
+            />
+          </div>
+        )}
+        
+        {/* Add New Expense Button */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center"
+        >
+          <span>Add Expense</span>
+        </button>
+      </div>
 
       {error && (
         <div className="text-red-500 mb-4">{error}</div>
@@ -263,6 +281,13 @@ const Expenses = () => {
           </table>
         </div>
       )}
+
+      {/* Expense Modal */}
+      <ExpenseModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSuccess={handleModalSuccess} 
+      />
     </div>
   );
 };

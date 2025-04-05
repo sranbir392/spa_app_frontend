@@ -35,7 +35,7 @@ const Sidebar = () => {
       access: ['admin', 'employee']
     },
     {
-      title: 'Today Expenses',
+      title: 'Expenses',
       path: '/dashboard/today/expenses',
       icon: <CalendarDays className="w-5 h-5" />,
       access: ['admin', 'employee']
