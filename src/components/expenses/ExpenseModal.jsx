@@ -2,9 +2,17 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 
 const ExpenseModal = ({ isOpen, onClose, onSuccess }) => {
+  // Create a date object for the current time
+  const currentDate = new Date();
+  // Set the time to 5:30
+  currentDate.setHours(5);
+  currentDate.setMinutes(30);
+  currentDate.setSeconds(0);
+
   const [formData, setFormData] = useState({
     title: '',
-    amount: ''
+    amount: '',
+    date: currentDate,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -47,7 +55,8 @@ const ExpenseModal = ({ isOpen, onClose, onSuccess }) => {
       // Reset form
       setFormData({
         title: '',
-        amount: ''
+        amount: '',
+        date: currentDate, // Maintain the date with current time
       });
       
       // Call success callback and close modal

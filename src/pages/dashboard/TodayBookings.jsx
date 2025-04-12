@@ -14,8 +14,14 @@ const TodayBookings = () => {
   const [error, setError] = useState(null);
   const [editingPayment, setEditingPayment] = useState(null);
   const [editingPrice, setEditingPrice] = useState(null);
+  const [editingCash, setEditingCash] = useState(null);
+  const [editingCard, setEditingCard] = useState(null);
+  const [editingUPI, setEditingUPI] = useState(null);
   const [newPaymentAmount, setNewPaymentAmount] = useState('');
   const [newPriceAmount, setNewPriceAmount] = useState('');
+  const [newCashAmount, setNewCashAmount] = useState('');
+  const [newCardAmount, setNewCardAmount] = useState('');
+  const [newUPIAmount, setNewUPIAmount] = useState('');
   const userRole = localStorage.getItem('role');
 
   const formatTime = (time) => {
@@ -129,6 +135,84 @@ const TodayBookings = () => {
     }
   };
 
+  const handleCashUpdate = async (bookingId) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      await axios.put(
+        `${import.meta.env.VITE_END_POINT}/bookings/${bookingId}`,
+        { cash: parseFloat(newCashAmount) },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      await fetchBookings(selectedDate);
+      setEditingCash(null);
+      setNewCashAmount('');
+    } catch (err) {
+      setError('Failed to update cash payment. Please try again.');
+      console.error('Error updating cash payment:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCardUpdate = async (bookingId) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      await axios.put(
+        `${import.meta.env.VITE_END_POINT}/bookings/${bookingId}`,
+        { card: parseFloat(newCardAmount) },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      await fetchBookings(selectedDate);
+      setEditingCard(null);
+      setNewCardAmount('');
+    } catch (err) {
+      setError('Failed to update card payment. Please try again.');
+      console.error('Error updating card payment:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUPIUpdate = async (bookingId) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      await axios.put(
+        `${import.meta.env.VITE_END_POINT}/bookings/${bookingId}`,
+        { upi: parseFloat(newUPIAmount) },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      await fetchBookings(selectedDate);
+      setEditingUPI(null);
+      setNewUPIAmount('');
+    } catch (err) {
+      setError('Failed to update UPI payment. Please try again.');
+      console.error('Error updating UPI payment:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     // if (userRole === 'employee') {
     //   const today = new Date();
@@ -138,6 +222,11 @@ const TodayBookings = () => {
     fetchBookings(selectedDate);
     setSearchParams({ date: selectedDate });
   }, [selectedDate, userRole]);
+
+  // Use the existing payment mode field
+  const getPaymentMode = (booking) => {
+    return booking.paymentMode || '-';
+  };
 
   return (
     <div className="container mx-auto">
@@ -176,6 +265,9 @@ const TodayBookings = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Massage Type</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session Time</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cash</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Card</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UPI</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Other Payment</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Mode</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
@@ -193,7 +285,7 @@ const TodayBookings = () => {
                 <tr key={booking._id}>
                   <td className="px-6 py-4 whitespace-nowrap">{booking.clientName}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{booking.clientContact}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{booking.massage.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{booking.massage?.name || booking.massageType}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{booking.sessionTime}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {editingPrice === booking._id ? (
@@ -235,6 +327,130 @@ const TodayBookings = () => {
                       </div>
                     )}
                   </td>
+                  {/* Cash Payment Field */}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {editingCash === booking._id ? (
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="number"
+                          value={newCashAmount}
+                          onChange={(e) => setNewCashAmount(e.target.value)}
+                          className="w-20 p-1 border rounded"
+                        />
+                        <button
+                          onClick={() => handleCashUpdate(booking._id)}
+                          className="bg-green-500 text-white px-2 py-1 rounded"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingCash(null);
+                            setNewCashAmount('');
+                          }}
+                          className="bg-gray-500 text-white px-2 py-1 rounded"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        ₹{booking.cash || '0'}
+                        <button
+                          onClick={() => {
+                            setEditingCash(booking._id);
+                            setNewCashAmount(booking.cash?.toString() || '0');
+                          }}
+                          className="bg-blue-500 text-white px-2 py-1 rounded ml-2"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                  {/* Card Payment Field */}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {editingCard === booking._id ? (
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="number"
+                          value={newCardAmount}
+                          onChange={(e) => setNewCardAmount(e.target.value)}
+                          className="w-20 p-1 border rounded"
+                        />
+                        <button
+                          onClick={() => handleCardUpdate(booking._id)}
+                          className="bg-green-500 text-white px-2 py-1 rounded"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingCard(null);
+                            setNewCardAmount('');
+                          }}
+                          className="bg-gray-500 text-white px-2 py-1 rounded"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        ₹{booking.card || '0'}
+                        <button
+                          onClick={() => {
+                            setEditingCard(booking._id);
+                            setNewCardAmount(booking.card?.toString() || '0');
+                          }}
+                          className="bg-blue-500 text-white px-2 py-1 rounded ml-2"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                  {/* UPI Payment Field */}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {editingUPI === booking._id ? (
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="number"
+                          value={newUPIAmount}
+                          onChange={(e) => setNewUPIAmount(e.target.value)}
+                          className="w-20 p-1 border rounded"
+                        />
+                        <button
+                          onClick={() => handleUPIUpdate(booking._id)}
+                          className="bg-green-500 text-white px-2 py-1 rounded"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingUPI(null);
+                            setNewUPIAmount('');
+                          }}
+                          className="bg-gray-500 text-white px-2 py-1 rounded"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        ₹{booking.upi || '0'}
+                        <button
+                          onClick={() => {
+                            setEditingUPI(booking._id);
+                            setNewUPIAmount(booking.upi?.toString() || '0');
+                          }}
+                          className="bg-blue-500 text-white px-2 py-1 rounded ml-2"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                  {/* Other Payment Field */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     {editingPayment === booking._id ? (
                       <div className="flex items-center space-x-2">
@@ -266,7 +482,7 @@ const TodayBookings = () => {
                         <button
                           onClick={() => {
                             setEditingPayment(booking._id);
-                            setNewPaymentAmount(booking.otherPayment?.toString() || '');
+                            setNewPaymentAmount(booking.otherPayment?.toString() || '0');
                           }}
                           className="bg-blue-500 text-white px-2 py-1 rounded ml-2"
                         >

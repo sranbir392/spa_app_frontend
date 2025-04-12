@@ -13,6 +13,7 @@ import Clients from './pages/dashboard/Clients';
 import ClientDetails from './pages/dashboard/ClientDetails';
 import Expenses from './pages/dashboard/Exepenses';
 import MonthlyReport from './pages/dashboard/MonthlyReport';
+import EmployeeStats from './pages/dashboard/EmployeeStats';
 
 const App = () => {
   return (
@@ -85,6 +86,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <TodayBookings/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="employeestats"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <EmployeeStats />
               </ProtectedRoute>
             }
           />

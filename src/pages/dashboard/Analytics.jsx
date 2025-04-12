@@ -118,13 +118,13 @@ const Analytics = () => {
         <div className="space-y-6">
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-600">Total Clients</p>
+              <p className="text-sm text-gray-600">Total Booking</p>
               <p className="text-2xl font-bold">{stats.totalClients}</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm text-gray-600">Other Payments</p>
-              <p className="text-2xl font-bold">₹{stats.totalOtherPayment - safeExpense}</p>
-              <p className="text-sm text-gray-500">Count: {stats.otherPaymentsCount}</p>
+              <p className="text-2xl font-bold">₹{stats.totalOtherPayment}</p>
+              {/* <p className="text-sm text-gray-500">Count: {stats.otherPaymentsCount}</p>s */}
             </div>
             <div className="bg-yellow-50 rounded-lg p-4">
               <p className="text-sm text-gray-600">Total Payments</p>
@@ -138,17 +138,17 @@ const Analytics = () => {
               <div className="bg-blue-50 rounded-lg p-4">
                 <p className="text-sm text-gray-600">Cash</p>
                 <p className="text-xl font-bold">₹{stats.paymentStats.cash.totalAmount}</p>
-                <p className="text-sm text-gray-500">Count: {stats.paymentStats.cash.count}</p>
+                {/* <p className="text-sm text-gray-500">Count: {stats.paymentStats.cash.count}</p> */}
               </div>
               <div className="bg-green-50 rounded-lg p-4">
                 <p className="text-sm text-gray-600">Card</p>
                 <p className="text-xl font-bold">₹{stats.paymentStats.card.totalAmount}</p>
-                <p className="text-sm text-gray-500">Count: {stats.paymentStats.card.count}</p>
+                {/* <p className="text-sm text-gray-500">Count: {stats.paymentStats.card.count}</p> */}
               </div>
               <div className="bg-purple-50 rounded-lg p-4">
                 <p className="text-sm text-gray-600">UPI</p>
                 <p className="text-xl font-bold">₹{stats.paymentStats.upi.totalAmount}</p>
-                <p className="text-sm text-gray-500">Count: {stats.paymentStats.upi.count}</p>
+                {/* <p className="text-sm text-gray-500">Count: {stats.paymentStats.upi.count}</p> */}
               </div>
             </div>
           </div>
