@@ -7,7 +7,12 @@ import {
   CalendarDays, 
   MessageSquare,
   BarChart,
-  PersonStandingIcon
+  PersonStandingIcon,
+  BarChart2,
+  Calendar1,
+  Wallet,
+  CircleFadingPlus,
+  ChartNoAxesCombined
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -31,14 +36,20 @@ const Sidebar = () => {
     {
       title: 'Create Bookings',
       path: '/dashboard/bookings',
-      icon: <CalendarDays className="w-5 h-5" />,
+      icon: <CircleFadingPlus className="w-5 h-5" />,
       access: ['admin', 'employee']
     },
     {
       title: 'Today Bookings',
       path: '/dashboard/today/bookings',
-      icon: <CalendarDays className="w-5 h-5" />,
+      icon: <Calendar1 className="w-5 h-5" />,
       access: ['admin', 'employee']
+    },
+    {
+      title: 'Booking History',
+      path: '/dashboard/monthly/report',
+      icon: <CalendarDays className="w-5 h-5" />,
+      access: ['admin']
     },
     {
       title: 'Massages',
@@ -53,12 +64,23 @@ const Sidebar = () => {
       access: ['admin'] // only admin can access
     },
     {
+      title:"Employee Stats",
+      path:"/dashboard/employeestats",
+      icon: <ChartNoAxesCombined className='w-5 h-5'/>,
+      access:['admin']
+    },
+    {
+      title: 'Expenses',
+      path: '/dashboard/today/expenses',
+      icon: <Wallet className="w-5 h-5" />,
+      access: ['admin']
+    },
+    {
       title:"Client",
       path:"/dashboard/clients",
       icon: <PersonStandingIcon className='w-5 h-5'/>,
       access:['admin']
     },
-    
   ];
 
   // Filter menu items based on user role

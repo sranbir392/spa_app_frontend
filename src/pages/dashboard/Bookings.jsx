@@ -1,20 +1,34 @@
 import { useState, useEffect } from 'react';
 
 const Bookings = () => {
-  // State management
+  // Helper function to get current date in YYYY-MM-DD format
+  const getCurrentDate = () => {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  };
+
+  // Helper function to get current time in HH:MM format
+  const getCurrentTime = () => {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  };
+
+  // State management with current date and time pre-filled
   const [formData, setFormData] = useState({
     clientName: '',
     clientContact: '',
     massage: '',
-    massageDate: '',
-    massageTime: '',
+    massageDate: getCurrentDate(),
+    massageTime: getCurrentTime(),
     massageEndTime: '',
     sessionTime: '30MIN+15MIN',
     massageType: '',
     massagePrice: 0,
     staffDetails: '',
     createdBy: localStorage.getItem('name') || '',
-    paymentMode: 'Card',
+    cash: 0,
+    card: 0,
+    upi: 0,
     otherPayment: 0,
     roomNumber: ''
   });
@@ -35,6 +49,12 @@ const Bookings = () => {
   useEffect(() => {
     fetchEmployees();
     fetchMassages();
+    
+    // Calculate end time when component mounts
+    setFormData(prev => ({
+      ...prev,
+      massageEndTime: calculateEndTime(prev.massageTime, prev.sessionTime)
+    }));
   }, []);
 
   useEffect(() => {
@@ -159,7 +179,6 @@ const Bookings = () => {
     }
   };
 
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => {
@@ -189,7 +208,6 @@ const Bookings = () => {
       }
 
       if (name === 'massagePrice') {
-        console.log(value)
         newData.massagePrice = parseFloat(value) || 0;
       }
 
@@ -224,15 +242,17 @@ const Bookings = () => {
           clientName: '',
           clientContact: '',
           massage: '',
-          massageDate: '',
-          massageTime: '',
+          massageDate: getCurrentDate(),
+          massageTime: getCurrentTime(),
           massageEndTime: '',
           sessionTime: '30MIN+15MIN',
           massageType: '',
           massagePrice: 0,
           staffDetails: '',
           createdBy: localStorage.getItem('name') || '',
-          paymentMode: 'Card',
+          cash: 0,
+          card: 0,
+          upi: 0,
           otherPayment: 0,
           roomNumber: ''
         });
@@ -316,7 +336,6 @@ const Bookings = () => {
             <input
               type="date"
               name="massageDate"
-              min={new Date().toISOString().split('T')[0]}
               value={formData.massageDate}
               onChange={handleInputChange}
               className="w-full p-2 border rounded"
@@ -333,7 +352,6 @@ const Bookings = () => {
               onChange={handleInputChange}
               className="w-full p-2 border rounded"
               required
-              step="900"
             />
           </div>
 
@@ -394,18 +412,42 @@ const Bookings = () => {
           </div>
 
           <div>
-            <label className="block mb-2">Payment Mode</label>
-            <select
-              name="paymentMode"
-              value={formData.paymentMode}
+            <label className="block mb-2">Cash Payment</label>
+            <input
+              type="number"
+              name="cash"
+              value={formData.cash}
               onChange={handleInputChange}
               className="w-full p-2 border rounded"
-              required
-            >
-              <option value="Card">Card</option>
-              <option value="Cash">Cash</option>
-              <option value="UPI">UPI</option>
-            </select>
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2">Card Payment</label>
+            <input
+              type="number"
+              name="card"
+              value={formData.card}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded"
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2">UPI Payment</label>
+            <input
+              type="number"
+              name="upi"
+              value={formData.upi}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded"
+              min="0"
+              step="0.01"
+            />
           </div>
 
           <div>
@@ -443,7 +485,9 @@ const Bookings = () => {
                 <th className="p-2 text-left">Massage</th>
                 <th className="p-2 text-left">Staff</th>
                 <th className="p-2 text-left">Price</th>
-                <th className="p-2 text-left">Payment Mode</th>
+                <th className="p-2 text-left">Cash</th>
+                <th className="p-2 text-left">Card</th>
+                <th className="p-2 text-left">UPI</th>
                 <th className="p-2 text-left">Other Payment</th>
               </tr>
             </thead>
@@ -456,8 +500,10 @@ const Bookings = () => {
                   <td className="p-2">{booking.massageType}</td>
                   <td className="p-2">{typeof booking?.staffDetails === 'object' ? booking?.staffDetails?.name : booking?.staffDetails}</td>
                   <td className="p-2">{booking.massagePrice}</td>
-                  <td className="p-2">{booking.paymentMode}</td>
-                  <td className="p-2">{booking.otherPayment}</td>
+                  <td className="p-2">{booking.cash || 0}</td>
+                  <td className="p-2">{booking.card || 0}</td>
+                  <td className="p-2">{booking.upi || 0}</td>
+                  <td className="p-2">{booking.otherPayment || 0}</td>
                 </tr>
               ))}
             </tbody>

@@ -7,7 +7,8 @@ const EmployeeForm = ({ onSubmit }) => {
     username: '',
     password: ''
   });
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
@@ -19,6 +20,9 @@ const EmployeeForm = ({ onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+    
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -35,7 +39,8 @@ const EmployeeForm = ({ onSubmit }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add employee');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to add employee');
       }
 
       const data = await response.json();
@@ -49,80 +54,91 @@ const EmployeeForm = ({ onSubmit }) => {
       });
     } catch (error) {
       console.error('Error adding employee:', error);
-      // You might want to show an error message to the user here
+      setError(error.message || 'An error occurred while adding the employee');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Add New Employee</h2>
-      <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-            Name
-          </label>
+    <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
+      
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          Name
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          autoComplete="off"
+          className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+          Username
+        </label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+          autoComplete="new-username"
+          className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
+        <div className="relative mt-1">
           <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
+            type={showPassword ? "text" : "password"}
+            id="password"
+            name="password"
+            value={formData.password}
             onChange={handleChange}
             required
-            autoComplete="off"
-            className="mt-3 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            autoComplete="new-password"
+            className="p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-10"
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 flex items-center pr-3"
+          >
+            {showPassword ? (
+              <EyeOff className="h-5 w-5 text-gray-400" />
+            ) : (
+              <Eye className="h-5 w-5 text-gray-400" />
+            )}
+          </button>
         </div>
-        <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-            Username
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-            autoComplete="new-username"
-            className="mt-3 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <div className="relative mt-3">
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              autoComplete="new-password"
-              className="p-2 block w-full rounded-md border border-black-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-10"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3"
-            >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5 text-gray-400" />
-              ) : (
-                <Eye className="h-5 w-5 text-gray-400" />
-              )}
-            </button>
-          </div>
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Add Employee
-        </button>
-      </form>
-    </div>
+      </div>
+      
+      <button
+        type="submit"
+        disabled={loading}
+        className={`w-full text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+          loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+        }`}
+      >
+        {loading ? 'Adding...' : 'Add Employee'}
+      </button>
+    </form>
   );
 };
 

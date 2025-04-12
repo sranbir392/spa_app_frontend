@@ -11,6 +11,9 @@ import Login from './pages/auth/LoginPage';
 import TodayBookings from './pages/dashboard/TodayBookings';
 import Clients from './pages/dashboard/Clients';
 import ClientDetails from './pages/dashboard/ClientDetails';
+import Expenses from './pages/dashboard/Exepenses';
+import MonthlyReport from './pages/dashboard/MonthlyReport';
+import EmployeeStats from './pages/dashboard/EmployeeStats';
 
 const App = () => {
   return (
@@ -51,7 +54,22 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="today/expenses"
+            element={
+              <ProtectedRoute>
+                <Expenses/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="monthly/report"
+            element={
+              <ProtectedRoute>
+                <MonthlyReport/>
+              </ProtectedRoute>
+            }
+          />
           
           {/* Common routes for both admin and employee */}
           <Route
@@ -62,11 +80,20 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          
           <Route
             path="today/bookings"
             element={
               <ProtectedRoute>
                 <TodayBookings/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="employeestats"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <EmployeeStats />
               </ProtectedRoute>
             }
           />

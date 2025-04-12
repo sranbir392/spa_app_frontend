@@ -6,7 +6,10 @@ import {
   CalendarDays, 
   MessageSquare,
   BarChart,
-  MessageSquareDot
+  MessageSquareDot,
+  Calendar1,
+  ChartNoAxesCombined,
+  Wallet
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -27,10 +30,18 @@ const Dashboard = () => {
     {
       title: 'Bookings',
       description: 'Create service bookings',
-      icon: <CalendarDays className="h-6 w-6" />,
+      icon: <Calendar1 className="h-6 w-6" />,
       path: '/dashboard/bookings',
       access: ['admin', 'employee'],
       bgColor: 'bg-green-100'
+    },
+    {
+      title: 'Monthly Bookings',
+      description: 'View Monthly bookings',
+      icon: <CalendarDays className="h-6 w-6" />,
+      path: '/dashboard/monthly/report',
+      access: ['admin'],
+      bgColor: 'bg-blue-100'
     },
     {
       title: 'Massages',
@@ -47,6 +58,22 @@ const Dashboard = () => {
       path: '/dashboard/analytics',
       access: ['admin'],
       bgColor: 'bg-yellow-100'
+    },
+    {
+      title: 'Expense',
+      description: 'Create Today Expenses',
+      icon: <Wallet className="h-6 w-6" />,
+      path: '/dashboard/today/expenses',
+      access: ['admin'],
+      bgColor: 'bg-teal-100'
+    },
+    {
+      title: 'Employee Analytics',
+      description: 'View Employee performance',
+      icon: <ChartNoAxesCombined className="h-6 w-6" />,
+      path: '/dashboard/employeestats',
+      access: ['admin'],
+      bgColor: 'bg-grey-100'
     }
   ];
 
