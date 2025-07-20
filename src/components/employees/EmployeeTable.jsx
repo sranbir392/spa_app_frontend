@@ -171,6 +171,9 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded, onEditEmplo
               Phone Number
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Notes
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Role
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -185,9 +188,7 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded, onEditEmplo
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Address
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Notes
-            </th>
+            
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -205,7 +206,11 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded, onEditEmplo
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-500">{employee.phoneNumber || '-'}</div>
               </td>
-              
+              <td className="px-6 py-4 whitespace-nowrap max-w-xs">
+                <div className="text-sm text-gray-500 truncate" title={employee.notes}>
+                  {employee.notes || '-'}
+                </div>
+              </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-500">{employee.role}</div>
               </td>
@@ -250,11 +255,7 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded, onEditEmplo
                   {employee.address || '-'}
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap max-w-xs">
-                <div className="text-sm text-gray-500 truncate" title={employee.notes}>
-                  {employee.notes || '-'}
-                </div>
-              </td>
+              
             </tr>
           ))}
         </tbody>
