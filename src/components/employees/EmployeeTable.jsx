@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ChangePasswordModal from './ChangePasswordModal';
-import { Key } from 'lucide-react';
+import { Key, Edit } from 'lucide-react';
 
 const ToggleSwitch = ({ checked, onChange }) => {
   return (
@@ -81,7 +81,7 @@ const PasswordField = ({ password }) => {
   );
 };
 
-const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded }) => {
+const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded, onEditEmployee }) => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
@@ -149,6 +149,10 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded }) => {
     onRefreshNeeded(); // Refresh the table after password change
   };
 
+  const handleEdit = (employee) => {
+    onEditEmployee(employee);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -164,6 +168,9 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded }) => {
               Password
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Phone Number
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Role
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -174,6 +181,12 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded }) => {
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Address
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Notes
             </th>
           </tr>
         </thead>
@@ -189,6 +202,10 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded }) => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <PasswordField password={employee.password} />
               </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-500">{employee.phoneNumber || '-'}</div>
+              </td>
+              
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-500">{employee.role}</div>
               </td>
@@ -207,6 +224,13 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded }) => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap space-x-2">
                 <button
+                  onClick={() => handleEdit(employee)}
+                  className="text-green-600 hover:text-green-900 transition-colors duration-200 mr-2"
+                  title="Edit Employee"
+                >
+                  <Edit className="w-5 h-5" />
+                </button>
+                <button
                   onClick={() => handleChangePassword(employee._id)}
                   className="text-blue-600 hover:text-blue-900 transition-colors duration-200 mr-2"
                   title="Change Password"
@@ -220,6 +244,16 @@ const EmployeeTable = ({ employees, onStatusChange, onRefreshNeeded }) => {
                 >
                   <TrashIcon />
                 </button>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap max-w-xs">
+                <div className="text-sm text-gray-500 truncate" title={employee.address}>
+                  {employee.address || '-'}
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap max-w-xs">
+                <div className="text-sm text-gray-500 truncate" title={employee.notes}>
+                  {employee.notes || '-'}
+                </div>
               </td>
             </tr>
           ))}
