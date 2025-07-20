@@ -7,7 +7,9 @@ const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const fetchEmployees = async () => {
     try {
@@ -43,10 +45,33 @@ const Employees = () => {
 
   const handleEmployeeAdded = () => {
     fetchEmployees(); // Refresh the list after adding a new employee
-    setShowAddForm(false); // Hide the form after successful submission
+    setShowModal(false); // Hide the modal after successful submission
   };
 
+  const handleEmployeeUpdated = () => {
+    fetchEmployees(); // Refresh the list after updating an employee
+    setShowModal(false); // Hide the modal after successful submission
+    setEditingEmployee(null); // Clear the editing employee
+    setIsEditing(false); // Reset editing state
+  };
 
+  const handleAddEmployee = () => {
+    setIsEditing(false);
+    setEditingEmployee(null);
+    setShowModal(true);
+  };
+
+  const handleEditEmployee = (employee) => {
+    setEditingEmployee(employee);
+    setIsEditing(true);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingEmployee(null);
+    setIsEditing(false);
+  };
 
   const handleStatusChange = (employeeId, newStatus) => {
     setEmployees(employees.map(emp => 
@@ -75,34 +100,15 @@ const Employees = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Employee Management</h1>
         <div className="flex space-x-3">
-          
           <button
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={handleAddEmployee}
             className="flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm transition-colors"
           >
             <Plus className="h-5 w-5 mr-2" />
             Add New Employee
           </button>
-          
         </div>
       </div>
-      
-      {showAddForm && (
-        <div className="mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Add New Employee</h2>
-              <button 
-                onClick={() => setShowAddForm(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </div>
-            <EmployeeForm onSubmit={handleEmployeeAdded} />
-          </div>
-        </div>
-      )}
       
       <div className="bg-white rounded-lg shadow-md">
         <div className="p-6">
@@ -111,11 +117,18 @@ const Employees = () => {
             employees={employees} 
             onStatusChange={handleStatusChange}
             onRefreshNeeded={fetchEmployees}
+            onEditEmployee={handleEditEmployee}
           />
         </div>
       </div>
 
- 
+      <EmployeeForm
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        onSubmit={isEditing ? handleEmployeeUpdated : handleEmployeeAdded}
+        employee={editingEmployee}
+        isEditing={isEditing}
+      />
     </div>
   );
 };
