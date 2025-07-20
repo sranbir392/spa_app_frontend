@@ -194,7 +194,6 @@ const EmployeeForm = ({ isOpen, onClose, onSubmit, employee = null, isEditing = 
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleChange}
-              required
               autoComplete="tel"
               className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
@@ -209,7 +208,6 @@ const EmployeeForm = ({ isOpen, onClose, onSubmit, employee = null, isEditing = 
               name="address"
               value={formData.address}
               onChange={handleChange}
-              required
               rows={3}
               autoComplete="street-address"
               className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
